@@ -1,0 +1,54 @@
+name: "Build and push to ghcr.io"
+description: >
+  This composite action builds a Docker image, tags it with the current git
+  branch/tag ref, and pushes it to ghcr.io.
+inputs:
+  github_token:
+    description: "The GitHub token to use for authentication."
+    required: true
+  image:
+    description: "The name of the Docker image to build."
+    required: true
+  dockerfile:
+    description: "The name of the Dockerfile to build."
+    required: false
+    default: "Dockerfile"
+  push:
+    description: "Whether to push the image to ghcr.io."
+    required: false
+    default: "true"
+outputs:
+  tag:
+    description: "The tag of the Docker image that was built."
+    value: ${{ steps.tag.outputs.tag }}
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Define the tag
+      id: tag
+      shell: bash
+      run: echo "tag=`bash ${{ github.action_path  }}/docker-tag.sh`" >> ${GITHUB_OUTPUT}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v2
+      if: fromJSON(inputs.push) == true
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ inputs.github_token }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        context: "."
+        file: "${{ inputs.dockerfile }}"
+        push: ${{ fromJSON(inputs.push) == true }}
+        tags: |
+          ghcr.io/${{ inputs.image }}:${{ steps.tag.outputs.tag }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
