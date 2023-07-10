@@ -1,2 +1,3 @@
 # build-and-push-to-ghrc
-Build a Docker image, auto-tag, and push it to ghcr.io
+
+A composite GitHub Actions action that builds a Docker image, tags it based on the current branch/tag, and pushes it to ghcr.io.
