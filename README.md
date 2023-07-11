@@ -49,6 +49,8 @@ To automatically set that, the above example uses the context variable `${{ gith
 
 - `dockerfile` (string, optional) the path to the Dockerfile to build. Default is `Dockerfile`.
 
+- `context` (string, optional) the [Docker build context](https://docs.docker.com/build/building/context/). Default is `.`.
+
 - `push` (boolean, optional) a flag to enable pushing to ghcr.io. Default is `true`.
   If `false`, the action skips the push to ghcr.io, but still builds the image with [`docker build`](https://docs.docker.com/engine/reference/commandline/build/).
 

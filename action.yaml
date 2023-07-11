@@ -13,6 +13,10 @@ inputs:
     description: "The name of the Dockerfile to build."
     required: false
     default: "Dockerfile"
+  context:
+    description: "The build context to use."
+    required: false
+    default: "."
   push:
     description: "Whether to push the image to ghcr.io."
     required: false
@@ -45,7 +49,7 @@ runs:
     - name: Build and push
       uses: docker/build-push-action@v4
       with:
-        context: "."
+        context: "${{ inputs.context }}"
         file: "${{ inputs.dockerfile }}"
         push: ${{ fromJSON(inputs.push) == true }}
         tags: |
