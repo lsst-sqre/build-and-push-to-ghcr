@@ -1,4 +1,4 @@
-# build-and-push-to-ghcr
+# lsst-sqre/build-and-push-to-ghcr
 
 A composite GitHub Actions action that builds a Docker image, tags it based on the current Git branch/tag, and pushes it to ghcr.io.
 
@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # (optional) only build on tags or tickets branches
+    # (optional) only build on tags or ticket branches
     if: >
       startsWith(github.ref, 'refs/tags/')
       || startsWith(github.head_ref, 'tickets/')
@@ -32,10 +32,10 @@ jobs:
           image: ${{ github.repository }} # e.g. lsst-sqre/safirdemo
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: echo Pushed ghcr.io/${{ github.repository }}/${{ steps.build.outputs.tag }}
+      - run: echo Pushed ghcr.io/${{ github.repository }}:${{ steps.build.outputs.tag }}
 ```
 
-By default gchr.io packages are named after the GitHub repository.
+By default, ghcr.io packages are named after the GitHub repository.
 To automatically set that, the above example uses the context variable `${{ github.repository }}` as the image name.
 
 ## Action reference
