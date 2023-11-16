@@ -25,6 +25,9 @@ outputs:
   tag:
     description: "The tag of the Docker image that was built."
     value: ${{ steps.tag.outputs.tag }}
+  fully_qualified_image_digest:
+    description: "A complete, unique, immutable identifier for the built image, including the registry and digest"
+    value: "ghcr.io/${{ inputs.image }}@${{ steps.build.outputs.digest }}"
 
 runs:
   using: "composite"
@@ -47,6 +50,7 @@ runs:
         password: ${{ inputs.github_token }}
 
     - name: Build and push
+      id: build
       uses: docker/build-push-action@v4
       with:
         context: "${{ inputs.context }}"

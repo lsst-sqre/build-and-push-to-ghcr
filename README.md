@@ -56,6 +56,9 @@ To automatically set that, the above example uses the context variable `${{ gith
 
 ### Outputs
 
+- `fully_qualified_image_digest` (string) A complete, unique, and immutable identifier for the built image,
+  e.g. `ghcr.io/owner/repo@sha256:4dcaf15076e027f272dc8aba14b1bab77fec44f8aac94c94f1b01ceee8d099d4`.
+  This string may be used to reference the built image in `docker pull`, `docker run`, etc.
 - `tag` (string) the tag of the image that was pushed to ghcr.io.
 
 ## Developer guide
