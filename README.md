@@ -17,6 +17,9 @@ name: CI
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     # (optional) only build on tags or ticket branches
     if: >
