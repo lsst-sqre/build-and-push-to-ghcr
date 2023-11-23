@@ -17,6 +17,9 @@ name: CI
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     # (optional) only build on tags or ticket branches
     if: >
@@ -53,6 +56,14 @@ To automatically set that, the above example uses the context variable `${{ gith
 
 - `push` (boolean, optional) a flag to enable pushing to ghcr.io. Default is `true`.
   If `false`, the action skips the push to ghcr.io, but still builds the image with [`docker build`](https://docs.docker.com/engine/reference/commandline/build/).
+
+- `cache-from` (string, optional) a comma-separated list of Docker buildx cache sources.
+  Default is `type=gha` to use the GitHub Actions cache.
+  Set as `type=local,src=/tmp/.buildx-cache` to use a local cache.
+
+- `cache-to` (string, optional) a comma-separated list of Docker buildx cache destinations.
+  Default is `type=gha,mode=max` to use the GitHub Actions cache.
+  Set as `type=local,dest=/tmp/.buildx-cache` to use a local cache.
 
 ### Outputs
 

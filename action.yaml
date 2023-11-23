@@ -21,6 +21,14 @@ inputs:
     description: "Whether to push the image to ghcr.io."
     required: false
     default: "true"
+  cache-from:
+    description: "List of external cache sources for buildx."
+    required: false
+    default: "type=gha"
+  cache-to:
+    description: "List of cache export destinations for buildx."
+    required: false
+    default: "type=gha,mode=max"
 outputs:
   tag:
     description: "The tag of the Docker image that was built."
@@ -58,5 +66,5 @@ runs:
         push: ${{ fromJSON(inputs.push) == true }}
         tags: |
           ghcr.io/${{ inputs.image }}:${{ steps.tag.outputs.tag }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        cache-from: ${{ inputs.cache-from }}
+        cache-to: ${{ inputs.cache-to }}
