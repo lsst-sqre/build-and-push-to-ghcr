@@ -21,6 +21,9 @@ inputs:
     description: "Whether to push the image to ghcr.io."
     required: false
     default: "true"
+  platforms:
+    description: "List of target platforms for build"
+    required: false
 outputs:
   tag:
     description: "The tag of the Docker image that was built."
@@ -37,6 +40,9 @@ runs:
       id: tag
       shell: bash
       run: echo "tag=`bash ${{ github.action_path  }}/docker-tag.sh`" >> ${GITHUB_OUTPUT}
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -56,6 +62,7 @@ runs:
         context: "${{ inputs.context }}"
         file: "${{ inputs.dockerfile }}"
         push: ${{ fromJSON(inputs.push) == true }}
+        platforms: ${{ inputs.platforms }}
         tags: |
           ghcr.io/${{ inputs.image }}:${{ steps.tag.outputs.tag }}
         cache-from: type=gha

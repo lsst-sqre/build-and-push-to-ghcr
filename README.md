@@ -54,6 +54,8 @@ To automatically set that, the above example uses the context variable `${{ gith
 - `push` (boolean, optional) a flag to enable pushing to ghcr.io. Default is `true`.
   If `false`, the action skips the push to ghcr.io, but still builds the image with [`docker build`](https://docs.docker.com/engine/reference/commandline/build/).
 
+- `platforms` (list, optional) List of target platform for build.
+
 ### Outputs
 
 - `fully_qualified_image_digest` (string) A complete, unique, and immutable identifier for the built image,
