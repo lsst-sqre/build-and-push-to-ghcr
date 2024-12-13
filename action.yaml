@@ -24,6 +24,12 @@ inputs:
   platforms:
     description: "List of target platforms for build"
     required: false
+  target:
+    description: "Name of target stage to build"
+    required: false
+  build-args:
+    description: "List of build-time variables"
+    required: false
 outputs:
   tag:
     description: "The tag of the Docker image that was built."
@@ -61,6 +67,8 @@ runs:
       with:
         context: "${{ inputs.context }}"
         file: "${{ inputs.dockerfile }}"
+        build-args: "${{ inputs.build-args }}"
+        target: "${{ inputs.target }}"
         push: ${{ fromJSON(inputs.push) == true }}
         platforms: ${{ inputs.platforms }}
         tags: |
