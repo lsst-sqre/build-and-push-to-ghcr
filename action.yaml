@@ -24,6 +24,15 @@ inputs:
   platforms:
     description: "List of target platforms for build"
     required: false
+  target:
+    description: "Name of target stage to build"
+    required: false
+  build-args:
+    description: "List of build-time variables"
+    required: false
+  additional-tags:
+    description: "List of additional tags to add to built image"
+    required: false
 outputs:
   tag:
     description: "The tag of the Docker image that was built."
@@ -40,6 +49,16 @@ runs:
       id: tag
       shell: bash
       run: echo "tag=`bash ${{ github.action_path  }}/docker-tag.sh`" >> ${GITHUB_OUTPUT}
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: |
+          ghcr.io/${{ inputs.image }}
+        tags: |
+          type=raw,${{ steps.tag.outputs.tag }}
+          ${{ inputs.additional-tags }}
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -61,9 +80,11 @@ runs:
       with:
         context: "${{ inputs.context }}"
         file: "${{ inputs.dockerfile }}"
+        build-args: "${{ inputs.build-args }}"
+        target: "${{ inputs.target }}"
         push: ${{ fromJSON(inputs.push) == true }}
         platforms: ${{ inputs.platforms }}
-        tags: |
-          ghcr.io/${{ inputs.image }}:${{ steps.tag.outputs.tag }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max

@@ -56,6 +56,12 @@ To automatically set that, the above example uses the context variable `${{ gith
 
 - `platforms` (list, optional) List of target platform for build.
 
+- `target` (string, optional) the name of a build stage in the Dockerfile to target for the image. This allows multiple images built from a single Dockerfile, e.g., "runtime-A" and "runtime-B".
+
+- `build-args` (list, optional) A list of build-arguments as newline-delimited `arg=value` string pairs. These may be specified in the Dockerfile as `ARG` statements.
+
+- `additional-tags` (list, optional) A newline-delimited list of additional tags to be added to the built image. These can be string literals or can conform to the `docker/metadata-action` [tags grammar](https://github.com/docker/metadata-action?tab=readme-ov-file#tags-input).
+
 ### Outputs
 
 - `fully_qualified_image_digest` (string) A complete, unique, and immutable identifier for the built image,
