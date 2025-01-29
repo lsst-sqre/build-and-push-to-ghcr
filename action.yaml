@@ -33,6 +33,9 @@ inputs:
   additional-tags:
     description: "List of additional tags to add to built image"
     required: false
+  secrets:
+    description: "Secrets to mount when building the image"
+    required: false
 outputs:
   tag:
     description: "The tag of the Docker image that was built."
@@ -85,6 +88,7 @@ runs:
         push: ${{ fromJSON(inputs.push) == true }}
         platforms: ${{ inputs.platforms }}
         tags: ${{ steps.meta.outputs.tags }}
+        secrets: "${{ inputs.secrets }}"
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
