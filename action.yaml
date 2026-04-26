@@ -36,6 +36,24 @@ inputs:
   secrets:
     description: "Secrets to mount when building the image"
     required: false
+  cache-from:
+    description: >-
+      buildx cache sources, one per line (forwarded to
+      docker/build-push-action). Default uses the GitHub Actions
+      cache, which is capped at 10 GB per repo and is branch-scoped.
+      Override with e.g.
+      ``type=registry,ref=ghcr.io/<owner>/<repo>:buildcache`` for
+      large images that don't fit in the GHA cache.
+    required: false
+    default: "type=gha"
+  cache-to:
+    description: >-
+      buildx cache destination (forwarded to
+      docker/build-push-action). Override alongside ``cache-from``
+      to use a different cache backend. Set to an empty string to
+      disable cache export entirely.
+    required: false
+    default: "type=gha,mode=max"
 outputs:
   tag:
     description: "The tag of the Docker image that was built."
@@ -90,5 +108,5 @@ runs:
         tags: ${{ steps.meta.outputs.tags }}
         secrets: "${{ inputs.secrets }}"
         labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        cache-from: ${{ inputs.cache-from }}
+        cache-to: ${{ inputs.cache-to }}

@@ -62,6 +62,22 @@ To automatically set that, the above example uses the context variable `${{ gith
 
 - `additional-tags` (list, optional) A newline-delimited list of additional tags to be added to the built image. These can be string literals or can conform to the `docker/metadata-action` [tags grammar](https://github.com/docker/metadata-action?tab=readme-ov-file#tags-input).
 
+- `cache-from` (list, optional) buildx cache sources, one per line. Forwarded directly to `docker/build-push-action`. Default is `type=gha`, which uses the GitHub Actions cache. The GHA cache is capped at 10 GB per repository and is branch-scoped, which is fine for most images but causes severe cache eviction for very large images (tens of GB or more). For those cases, override with a registry-backed cache, for example:
+
+  ```yaml
+  cache-from: |
+    type=registry,ref=ghcr.io/${{ github.repository }}:buildcache-${{ github.head_ref || github.ref_name }}
+    type=registry,ref=ghcr.io/${{ github.repository }}:buildcache-main
+  ```
+
+- `cache-to` (string, optional) buildx cache destination, forwarded directly to `docker/build-push-action`. Default is `type=gha,mode=max`. Override alongside `cache-from` to use a different cache backend, for example a registry-backed cache:
+
+  ```yaml
+  cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache-${{ github.head_ref || github.ref_name }},mode=max
+  ```
+
+  Set to an empty string to disable cache export entirely. Note that pushing to a registry cache requires `packages: write` permission on the workflow's `GITHUB_TOKEN`.
+
 ### Outputs
 
 - `fully_qualified_image_digest` (string) A complete, unique, and immutable identifier for the built image,
